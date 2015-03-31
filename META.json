@@ -4,7 +4,7 @@
       "Asato Wakisaka <asato.wakisaka@gmail.com>"
    ],
    "dynamic_config" : 0,
-   "generated_by" : "Minilla/v2.3.0, CPAN::Meta::Converter version 2.143240",
+   "generated_by" : "Minilla/v2.3.0, CPAN::Meta::Converter version 2.150001",
    "license" : [
       "perl_5"
    ],
@@ -42,6 +42,9 @@
       },
       "runtime" : {
          "requires" : {
+            "LWP::Protocol::PSGI" : "0",
+            "List::MoreUtils" : "0",
+            "Plack::Request" : "0",
             "perl" : "5.008001"
          }
       },
@@ -52,5 +55,16 @@
       }
    },
    "release_status" : "unstable",
+   "resources" : {
+      "bugtracker" : {
+         "web" : "https://github.com/astj/p5-Test-WWW-Stub/issues"
+      },
+      "homepage" : "https://github.com/astj/p5-Test-WWW-Stub",
+      "repository" : {
+         "type" : "git",
+         "url" : "git://github.com/astj/p5-Test-WWW-Stub.git",
+         "web" : "https://github.com/astj/p5-Test-WWW-Stub"
+      }
+   },
    "version" : "0.01"
 }

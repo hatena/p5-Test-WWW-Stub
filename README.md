@@ -12,7 +12,7 @@ Test::WWW::Stub is ...
 
 # LICENSE
 
-Copyright (C) Asato Wakisaka.
+Copyright (C) Hatena Co., Ltd.
 
 This library is free software; you can redistribute it and/or modify
 it under the same terms as Perl itself.
@@ -20,3 +20,5 @@ it under the same terms as Perl itself.
 # AUTHOR
 
 Asato Wakisaka <asato.wakisaka@gmail.com>
+
+Original implementation written by suzak.
