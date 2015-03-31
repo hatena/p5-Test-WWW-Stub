@@ -59,6 +59,16 @@ sub register : Tests {
         ok $res->is_success;
         is $res->header( 'X-Test-Req-Uri' ), 'http://example.com/TEST', 'app receives proper env';
     };
+
+    subtest 'register without guard ' => sub {
+        {
+            Test::WWW::Stub->register(q<http://example.com/HOGE/>,  [ 200, [], [ '1' ] ]);
+            ok $self->ua->get('http://example.com/HOGE/')->is_success, 'stub works when registered without guard';
+        }
+
+        ok $self->ua->get('http://example.com/HOGE/')->is_success, 'when registered without guard, stub works outside of scope too.';
+    };
+
 }
 
 sub unstub : Tests {

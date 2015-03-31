@@ -120,14 +120,28 @@ Test::WWW::Stub - Stub specified URL for LWP
     my $ua = LWP::UserAgent->new;
 
     my $stubbed_res = [ 200, [], ['okay'] ];
-    Test::WWW::Stub->register(q<http://example.com/TEST/>, $stubbed_res);
 
-    is $ua->get('http://example.com/TEST')->content, 'okay';
+    {
+        my $guard = Test::WWW::Stub->register(q<http://example.com/TEST/>, $stubbed_res);
 
-    # You can also use regexp for uri
-    Test::WWW::Stub->register(qr<\A\Qhttp://example.com/MATCH/\E>, $stubbed_res);
+        is $ua->get('http://example.com/TEST')->content, 'okay';
+    }
+    isnt $ua->get('http://example.com/TEST')->content, 'okay';
 
-    is $ua->get('http://example.com/MATCH/hogehoge')->content, 'okay';
+    {
+        # registering in void context doesn't create guard.
+        Test::WWW::Stub->register(q<http://example.com/HOGE/>, $stubbed_res);
+
+        is $ua->get('http://example.com/HOGE')->content, 'okay';
+    }
+    is $ua->get('http://example.com/HOGE')->content, 'okay';
+
+    {
+        # You can also use regexp for uri
+        my $guard = Test::WWW::Stub->register(qr<\A\Qhttp://example.com/MATCH/\E>, $stubbed_res);
+
+        is $ua->get('http://example.com/MATCH/hogehoge')->content, 'okay';
+    }
 
     my $last_req = Test::WWW::Stub->last_request; # Plack::Request
     is $last_req->uri, 'http://example.com/MATCH/hogehoge';
@@ -149,8 +163,11 @@ Because this modules uses L<LWP::UserAgent::PSGI> internally, you don't have to 
 
     my $guard = Test::WWW::Stub->register( $uri_or_re, $app_or_res );
 
-Registers a new stub for URI C<$uri_or_re>. C<$uri_or_re> is either an URI string or a compiled regular expression for URI.
+Registers a new stub for URI C<$uri_or_re>.
+If called in void context, it simply registers the stub.
+Otherwise,it returns a new guard which drops the stub on destroyed.
 
+C<$uri_or_re> is either an URI string or a compiled regular expression for URI.
 C<$app_or_res> is a PSGI response array ref, or code ref which returns a PSGI response array ref.
 
 Once registered, C<$app_or_res> will be return from LWP::UserAgent on requesting certain URI matches C<$uri_or_re>.
