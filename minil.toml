@@ -1,4 +1,4 @@
 name = "Test-WWW-Stub"
-# badges = ["travis"]
+badges = ["travis"]
 module_maker="ModuleBuildTiny"
 

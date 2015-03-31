@@ -1,3 +1,4 @@
+[![Build Status](https://travis-ci.org/astj/p5-Test-WWW-Stub.svg?branch=master)](https://travis-ci.org/astj/p5-Test-WWW-Stub)
 # NAME
 
 Test::WWW::Stub - Stub specified URL for LWP
