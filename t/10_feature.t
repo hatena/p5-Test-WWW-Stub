@@ -1,5 +1,6 @@
 use strict;
 use warnings;
+use Test::Tester; # Call before any other Test::Builder-based modules
 use Test::More;
 use Test::Deep qw( cmp_deeply methods );
 use parent qw( Test::Class );
@@ -9,6 +10,12 @@ use Test::WWW::Stub;
 use LWP::UserAgent;
 
 sub ua { LWP::UserAgent->new; }
+
+sub test_pass {
+    my ($sub) = shift;
+    my ($premature, @results) = run_tests( $sub );
+    return $results[0]->{ok};
+}
 
 sub register : Tests {
     my $self = shift;
@@ -79,12 +86,17 @@ sub request : Tests {
     $self->ua->get('http://request.example.com/FIRST');
     $self->ua->get('http://request.example.com/SECOND');
 
-    Test::WWW::Stub->requested_ok('GET', 'http://request.example.com/FIRST');
-  TODO: {
-        local $TODO = 'should fail, now thinking how to handle fail...';
-        Test::WWW::Stub->requested_ok('POST', 'http://request.example.com/FIRST');
-        Test::WWW::Stub->requested_ok('GET', 'http://request.example.com/NOTREQUESTED');
-    }
+    ok test_pass(
+        sub{ Test::WWW::Stub->requested_ok('GET', 'http://request.example.com/FIRST') }
+    ), 'passes when calling with requested method-uri pair';
+
+    ok ! test_pass(
+        sub{ Test::WWW::Stub->requested_ok('GET', 'http://request.example.com/NOTREQUESTED') }
+    ), 'fails when calling with not-requested uri';
+
+    ok ! test_pass(
+        sub{ Test::WWW::Stub->requested_ok('POST', 'http://request.example.com/FIRST') }
+    ), 'We requested only by GET, so requeted_ok("POST", ..) fails';
 
     subtest 'last_request' => sub {
         ok my $last_req = Test::WWW::Stub->last_request;
