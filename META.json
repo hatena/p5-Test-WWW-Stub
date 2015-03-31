@@ -1,5 +1,5 @@
 {
-   "abstract" : "It's new $module",
+   "abstract" : "Stub specified URL for LWP",
    "author" : [
       "Asato Wakisaka <asato.wakisaka@gmail.com>"
    ],
@@ -50,7 +50,9 @@
       },
       "test" : {
          "requires" : {
-            "Test::More" : "0.98"
+            "Test::Deep" : "0",
+            "Test::More" : "0.98",
+            "Test::Tester" : "0"
          }
       }
    },
