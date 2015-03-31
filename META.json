@@ -45,6 +45,7 @@
             "LWP::Protocol::PSGI" : "0",
             "List::MoreUtils" : "0",
             "Plack::Request" : "0",
+            "Test::More" : "0.98",
             "perl" : "5.008001"
          }
       },
@@ -53,7 +54,6 @@
             "LWP::UserAgent" : "0",
             "Test::Class" : "0",
             "Test::Deep" : "0",
-            "Test::More" : "0.98",
             "Test::Tester" : "0"
          }
       }
