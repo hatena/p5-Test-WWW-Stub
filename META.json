@@ -50,6 +50,8 @@
       },
       "test" : {
          "requires" : {
+            "LWP::UserAgent" : "0",
+            "Test::Class" : "0",
             "Test::Deep" : "0",
             "Test::More" : "0.98",
             "Test::Tester" : "0"
