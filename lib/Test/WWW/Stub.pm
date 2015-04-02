@@ -94,11 +94,11 @@ my $app = sub {
     return [ 499, [], [] ];
 };
 
-LWP::Protocol::PSGI->register($app);
+my $regiser_g = LWP::Protocol::PSGI->register($app);
 
 sub unstub {
     Carp::croak 'guard is required' unless defined wantarray;
-    LWP::Protocol::PSGI->unregister;
+    undef $regiser_g;
     return guard {
         LWP::Protocol::PSGI->register($app);
     }

@@ -82,10 +82,7 @@ sub unstub : Tests {
         ok $self->ua->get('http://example.com/TEST')->is_error, 'unstubbed';
     }
 
-  TODO: {
-        local $TODO = 'should pass. may be broken?';
-        ok $self->ua->get('http://example.com/TEST')->is_success, 're-registered stub';
-    };
+    ok $self->ua->get('http://example.com/TEST')->is_success, 're-registered stub';
 }
 
 sub request : Tests {
