@@ -94,13 +94,13 @@ my $app = sub {
     return [ 499, [], [] ];
 };
 
-LWP::Protocol::PSGI->register($app);
+my $register_g = LWP::Protocol::PSGI->register($app);
 
 sub unstub {
     Carp::croak 'guard is required' unless defined wantarray;
-    LWP::Protocol::PSGI->unregister;
+    undef $register_g;
     return guard {
-        LWP::Protocol::PSGI->register($app);
+        $register_g = LWP::Protocol::PSGI->register($app);
     }
 }
 
@@ -111,15 +111,107 @@ __END__
 
 =head1 NAME
 
-Test::WWW::Stub - It's new $module
+Test::WWW::Stub - Block and stub specified URL for LWP
 
 =head1 SYNOPSIS
 
+    # External http(s) access via LWP is blocked by just using this module.
     use Test::WWW::Stub;
+
+    my $ua = LWP::UserAgent->new;
+
+    my $stubbed_res = [ 200, [], ['okay'] ];
+
+    {
+        my $guard = Test::WWW::Stub->register(q<http://example.com/TEST>, $stubbed_res);
+
+        is $ua->get('http://example.com/TEST')->content, 'okay';
+    }
+    isnt $ua->get('http://example.com/TEST')->content, 'okay';
+
+    {
+        # registering in void context doesn't create guard.
+        Test::WWW::Stub->register(q<http://example.com/HOGE/>, $stubbed_res);
+
+        is $ua->get('http://example.com/HOGE')->content, 'okay';
+    }
+    is $ua->get('http://example.com/HOGE')->content, 'okay';
+
+    {
+        # You can also use regexp for uri
+        my $guard = Test::WWW::Stub->register(qr<\A\Qhttp://example.com/MATCH/\E>, $stubbed_res);
+
+        is $ua->get('http://example.com/MATCH/hogehoge')->content, 'okay';
+    }
+
+    {
+        # you can unstub and allow external access temporary
+        my $unregister_guard = Test::WWW::Stub->unregister;
+
+        # External access occurs!!
+        ok $ua->get('http://example.com');
+    }
+
+    my $last_req = Test::WWW::Stub->last_request; # Plack::Request
+    is $last_req->uri, 'http://example.com/MATCH/hogehoge';
+
+    Test::WWW::Stub->requested_ok('GET', 'http://example.com/TEST'); # passes
+
 
 =head1 DESCRIPTION
 
-Test::WWW::Stub is ...
+Test::WWW::Stub is a helper module to block external http(s) request and stub some specific requests in your test.
+
+Because this modules uses L<LWP::UserAgent::PSGI> internally, you don't have to modify target codes using L<LWP::UserAgent>.
+
+=head1 METHODS
+
+=over 4
+
+=item C<register>
+
+    my $guard = Test::WWW::Stub->register( $uri_or_re, $app_or_res );
+
+Registers a new stub for URI C<$uri_or_re>.
+If called in void context, it simply registers the stub.
+Otherwise,it returns a new guard which drops the stub on destroyed.
+
+C<$uri_or_re> is either an URI string or a compiled regular expression for URI.
+C<$app_or_res> is a PSGI response array ref, or code ref which returns a PSGI response array ref.
+
+Once registered, C<$app_or_res> will be return from LWP::UserAgent on requesting certain URI matches C<$uri_or_re>.
+
+=item C<requested_ok>
+
+    Test::WWW::Stub->requested_ok($method, $uri);
+
+Passes when C<$uri> has been requested with C<$method>, otherwise fails and dumps requests handled by Test::WWW::Stub.
+
+This method calls C<Test::More::ok> or C<Test::More::diag> internally.
+
+=item C<requests>
+
+    my @requests = Test::WWW::Stub->requests;
+
+Returns an array of L<Plack::Request> which is handled by Test::WWW::Stub.
+
+=item C<last_request>
+
+    my $last_req = Test::WWW::Stub->last_request;
+
+Returns a Plack::Request object last handled by Test::WWW::Stub.
+
+This method is same as C<[Test::WWW::Stub-E<gt>requests]-E<gt>[-1]>.
+
+=item C<unstub>
+
+    my $unstub_guard = Test::WWW::Stub->unstub;
+
+Unregister stub and enables external access, and returns a guard object which re-enables stub on destroyed.
+
+In constrast to C<register>, this method doesn't work when called in void context.
+
+=back
 
 =head1 LICENSE
 
