@@ -13,7 +13,7 @@ Test::WWW::Stub - Block and stub specified URL for LWP
     my $stubbed_res = [ 200, [], ['okay'] ];
 
     {
-        my $guard = Test::WWW::Stub->register(q<http://example.com/TEST/>, $stubbed_res);
+        my $guard = Test::WWW::Stub->register(q<http://example.com/TEST>, $stubbed_res);
 
         is $ua->get('http://example.com/TEST')->content, 'okay';
     }
