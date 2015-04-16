@@ -111,10 +111,11 @@ __END__
 
 =head1 NAME
 
-Test::WWW::Stub - Stub specified URL for LWP
+Test::WWW::Stub - Block and stub specified URL for LWP
 
 =head1 SYNOPSIS
 
+    # External http(s) access via LWP is blocked by just using this module.
     use Test::WWW::Stub;
 
     my $ua = LWP::UserAgent->new;
@@ -143,6 +144,14 @@ Test::WWW::Stub - Stub specified URL for LWP
         is $ua->get('http://example.com/MATCH/hogehoge')->content, 'okay';
     }
 
+    {
+        # you can unstub and allow external access temporary
+        my $unregister_guard = Test::WWW::Stub->unregister;
+
+        # External access occurs!!
+        ok $ua->get('http://example.com');
+    }
+
     my $last_req = Test::WWW::Stub->last_request; # Plack::Request
     is $last_req->uri, 'http://example.com/MATCH/hogehoge';
 
@@ -151,7 +160,7 @@ Test::WWW::Stub - Stub specified URL for LWP
 
 =head1 DESCRIPTION
 
-Test::WWW::Stub is a helper module to stub some http(s) request in your test.
+Test::WWW::Stub is a helper module to block external http(s) request and stub some specific requests in your test.
 
 Because this modules uses L<LWP::UserAgent::PSGI> internally, you don't have to modify target codes using L<LWP::UserAgent>.
 
@@ -193,6 +202,14 @@ Returns an array of L<Plack::Request> which is handled by Test::WWW::Stub.
 Returns a Plack::Request object last handled by Test::WWW::Stub.
 
 This method is same as C<[Test::WWW::Stub-E<gt>requests]-E<gt>[-1]>.
+
+=item C<unstub>
+
+    my $unstub_guard = Test::WWW::Stub->unstub;
+
+Unregister stub and enables external access, and returns a guard object which re-enables stub on destroyed.
+
+In constrast to C<register>, this method doesn't work when called in void context.
 
 =back
 

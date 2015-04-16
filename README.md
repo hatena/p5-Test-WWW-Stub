@@ -1,10 +1,11 @@
 [![Build Status](https://travis-ci.org/astj/p5-Test-WWW-Stub.svg?branch=master)](https://travis-ci.org/astj/p5-Test-WWW-Stub)
 # NAME
 
-Test::WWW::Stub - Stub specified URL for LWP
+Test::WWW::Stub - Block and stub specified URL for LWP
 
 # SYNOPSIS
 
+    # External http(s) access via LWP is blocked by just using this module.
     use Test::WWW::Stub;
 
     my $ua = LWP::UserAgent->new;
@@ -33,6 +34,14 @@ Test::WWW::Stub - Stub specified URL for LWP
         is $ua->get('http://example.com/MATCH/hogehoge')->content, 'okay';
     }
 
+    {
+        # you can unstub and allow external access temporary
+        my $unregister_guard = Test::WWW::Stub->unregister;
+
+        # External access occurs!!
+        ok $ua->get('http://example.com');
+    }
+
     my $last_req = Test::WWW::Stub->last_request; # Plack::Request
     is $last_req->uri, 'http://example.com/MATCH/hogehoge';
 
@@ -40,7 +49,7 @@ Test::WWW::Stub - Stub specified URL for LWP
 
 # DESCRIPTION
 
-Test::WWW::Stub is a helper module to stub some http(s) request in your test.
+Test::WWW::Stub is a helper module to block external http(s) request and stub some specific requests in your test.
 
 Because this modules uses [LWP::UserAgent::PSGI](https://metacpan.org/pod/LWP::UserAgent::PSGI) internally, you don't have to modify target codes using [LWP::UserAgent](https://metacpan.org/pod/LWP::UserAgent).
 
@@ -80,6 +89,14 @@ Because this modules uses [LWP::UserAgent::PSGI](https://metacpan.org/pod/LWP::U
     Returns a Plack::Request object last handled by Test::WWW::Stub.
 
     This method is same as `[Test::WWW::Stub->requests]->[-1]`.
+
+- `unstub`
+
+        my $unstub_guard = Test::WWW::Stub->unstub;
+
+    Unregister stub and enables external access, and returns a guard object which re-enables stub on destroyed.
+
+    In constrast to `register`, this method doesn't work when called in void context.
 
 # LICENSE
 
