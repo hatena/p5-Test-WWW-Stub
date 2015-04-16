@@ -83,6 +83,15 @@ sub unstub : Tests {
     }
 
     ok $self->ua->get('http://example.com/TEST')->is_success, 're-registered stub';
+
+    subtest 'unstub again' => sub {
+        {
+            my $unstub_g = Test::WWW::Stub->unstub;
+            ok $self->ua->get('http://example.com/TEST')->is_error, 'unstubbed';
+        }
+
+        ok $self->ua->get('http://example.com/TEST')->is_success, 're-registered stub';
+    }
 }
 
 sub request : Tests {

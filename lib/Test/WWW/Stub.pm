@@ -100,7 +100,7 @@ sub unstub {
     Carp::croak 'guard is required' unless defined wantarray;
     undef $register_g;
     return guard {
-        LWP::Protocol::PSGI->register($app);
+        $register_g = LWP::Protocol::PSGI->register($app);
     }
 }
 
