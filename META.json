@@ -70,5 +70,8 @@
          "web" : "https://github.com/astj/p5-Test-WWW-Stub"
       }
    },
-   "version" : "0.01"
+   "version" : "0.01",
+   "x_contributors" : [
+      "astj <astj@users.noreply.github.com>"
+   ]
 }
