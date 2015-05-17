@@ -2,7 +2,11 @@ Revision history for Perl extension Test-WWW-Stub
 
 {{$NEXT}}
 
+0.02 2015-05-17T10:38:01Z
+    - Fix typo in README. (wrong module name, #7)
+    - Add #clear_requests (#6).
+
 0.01 2015-04-17T04:43:19Z
 
-    - original version
+    - Initial release
 
