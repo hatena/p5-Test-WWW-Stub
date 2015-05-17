@@ -119,6 +119,12 @@ sub request : Tests {
         is $last_req->method, 'GET';
         is $last_req->uri, 'http://request.example.com/SECOND';
     };
+
+    my $requested_requests = [ Test::WWW::Stub->requests ];
+    is scalar @$requested_requests, 10;
+
+    Test::WWW::Stub->clear_requests;
+    cmp_deeply [ Test::WWW::Stub->requests], [];
 }
 
 __PACKAGE__->runtests;

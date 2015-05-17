@@ -57,6 +57,10 @@ sub requested_ok {
     ) or Test::More::diag Test::More::explain [ map { $_->method . ' ' . $_->uri } @Requests ]
 }
 
+sub clear_requests {
+    @Requests = ();
+}
+
 my $app = sub {
     my ($env) = @_;
     my $req = Plack::Request->new($env);
@@ -202,6 +206,14 @@ Returns an array of L<Plack::Request> which is handled by Test::WWW::Stub.
 Returns a Plack::Request object last handled by Test::WWW::Stub.
 
 This method is same as C<[Test::WWW::Stub-E<gt>requests]-E<gt>[-1]>.
+
+=item C<clear_requests>
+
+    Test::WWW::Stub->clear_requests;
+
+Clears request history of Test::WWW::Stub.
+
+C<[Test::WWW::Stub-E<gt>requests]> becomes empty just after this method called.
 
 =item C<unstub>
 

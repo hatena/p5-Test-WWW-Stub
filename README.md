@@ -90,6 +90,14 @@ Because this modules uses [LWP::Protocol::PSGI](https://metacpan.org/pod/LWP::Pr
 
     This method is same as `[Test::WWW::Stub->requests]->[-1]`.
 
+- `clear_requests`
+
+        Test::WWW::Stub->clear_requests;
+
+    Clears request history of Test::WWW::Stub.
+
+    `[Test::WWW::Stub->requests]` becomes empty just after this method called.
+
 - `unstub`
 
         my $unstub_guard = Test::WWW::Stub->unstub;
