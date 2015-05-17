@@ -51,7 +51,7 @@ Test::WWW::Stub - Block and stub specified URL for LWP
 
 Test::WWW::Stub is a helper module to block external http(s) request and stub some specific requests in your test.
 
-Because this modules uses [LWP::UserAgent::PSGI](https://metacpan.org/pod/LWP::UserAgent::PSGI) internally, you don't have to modify target codes using [LWP::UserAgent](https://metacpan.org/pod/LWP::UserAgent).
+Because this modules uses [LWP::Protocol::PSGI](https://metacpan.org/pod/LWP::Protocol::PSGI) internally, you don't have to modify target codes using [LWP::UserAgent](https://metacpan.org/pod/LWP::UserAgent).
 
 # METHODS
 
