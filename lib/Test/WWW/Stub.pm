@@ -13,7 +13,6 @@ use Test::More ();
 use List::MoreUtils ();
 use URI;
 
-# PSGI app の場合は第2引数に Plack::Request でラップされたのもついてきます
 our $Handlers = { };
 our @Requests;
 
@@ -67,7 +66,7 @@ my $app = sub {
 
     push @Requests, $req;
 
-    # クエリは app で処理してほしい
+    # Don't use query part of URI for handler matching.
     my $uri = $req->uri->clone;
        $uri->path_query($uri->path);
 
@@ -181,7 +180,11 @@ If called in void context, it simply registers the stub.
 Otherwise,it returns a new guard which drops the stub on destroyed.
 
 C<$uri_or_re> is either an URI string or a compiled regular expression for URI.
-C<$app_or_res> is a PSGI response array ref, or code ref which returns a PSGI response array ref.
+C<$app_or_res> is a PSGI response array ref, or a code ref which returns a PSGI response array ref.
+If C<$app_or_res> is a code ref, requests are passed to the code ref following syntax:
+
+    my $req = Plack::Request->new($env);
+    $app_or_res->($env, $req);
 
 Once registered, C<$app_or_res> will be return from LWP::UserAgent on requesting certain URI matches C<$uri_or_re>.
 
