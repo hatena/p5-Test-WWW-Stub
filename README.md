@@ -64,7 +64,11 @@ Because this modules uses [LWP::Protocol::PSGI](https://metacpan.org/pod/LWP::Pr
     Otherwise,it returns a new guard which drops the stub on destroyed.
 
     `$uri_or_re` is either an URI string or a compiled regular expression for URI.
-    `$app_or_res` is a PSGI response array ref, or code ref which returns a PSGI response array ref.
+    `$app_or_res` is a PSGI response array ref, or a code ref which returns a PSGI response array ref.
+    If `$app_or_res` is a code ref, requests are passed to the code ref following syntax:
+
+        my $req = Plack::Request->new($env);
+        $app_or_res->($env, $req);
 
     Once registered, `$app_or_res` will be return from LWP::UserAgent on requesting certain URI matches `$uri_or_re`.
 
