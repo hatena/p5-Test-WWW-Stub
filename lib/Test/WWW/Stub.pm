@@ -60,6 +60,16 @@ sub clear_requests {
     @Requests = ();
 }
 
+sub _trace_file_and_line {
+    my $level = $Test::Builder::Level;
+    my (undef, $file, $line) = caller($level);
+    # assume "Actual" caller is test file named FOOBAR.t
+    while ($file && $file !~ m<\.t$>) {
+        (undef, $file, $line) = caller(++$level);
+    }
+    ($file, $line);
+}
+
 my $app = sub {
     my ($env) = @_;
     my $req = Plack::Request->new($env);
@@ -86,11 +96,8 @@ my $app = sub {
         }
     }
 
-    my $level = $Test::Builder::Level;
-    my (undef, $file, $line) = caller($level);
-    while ($file && $file !~ m<\.t$>) {
-        (undef, $file, $line) = caller(++$level);
-    }
+    my ($file, $line) = _trace_file_and_line();
+
     my $method = $req->method;
     Test::More::diag "Unexpected external access: $method $uri at $file line $line";
 
