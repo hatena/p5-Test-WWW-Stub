@@ -49,7 +49,7 @@ sub register : Tests {
             my $env = shift;
             my $req = Plack::Request->new($env);
             my $headers = [
-                'X-Test-Req-Uri' => $req->uri,
+                'X-Test-Req-Uri' => $req->uri->as_string,
             ];
             return [ 200, $headers, [ 1 ] ];
         };
@@ -58,6 +58,10 @@ sub register : Tests {
         my $res = $self->ua->get('http://example.com/TEST');
         ok $res->is_success;
         is $res->header( 'X-Test-Req-Uri' ), 'http://example.com/TEST', 'app receives proper env';
+
+        my $res_with_query = $self->ua->get('http://example.com/TEST?foo=bar');
+        ok $res_with_query->is_success, 'query parameters are ignored on matching handlers,';
+        is $res_with_query->header( 'X-Test-Req-Uri' ), 'http://example.com/TEST?foo=bar', 'But passed to app!';
     };
 
     subtest 'register without guard ' => sub {
@@ -121,7 +125,7 @@ sub request : Tests {
     };
 
     my $requested_requests = [ Test::WWW::Stub->requests ];
-    is scalar @$requested_requests, 10;
+    is scalar @$requested_requests, 11; # XXX dependent on other tests!
 
     Test::WWW::Stub->clear_requests;
     cmp_deeply [ Test::WWW::Stub->requests], [];
