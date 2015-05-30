@@ -74,7 +74,7 @@ sub import {
     #   cache_dir => 'FILEPATH', # default t/fixtures/webmock
     #   ua_class => '', # default LWP
     # }
-    if ($args{fixture} && $args{fixture}->{enables}) {
+    if ($args{fixture} && $args{fixture}->{enable}) {
         require Test::WWW::Stub::Feature::Fixture;
         $feature_instances->{fixture} =
             Test::WWW::Stub::Feature::Fixture->initialize(%{$args{fixture}});
