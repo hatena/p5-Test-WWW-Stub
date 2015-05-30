@@ -14,6 +14,7 @@ use List::MoreUtils ();
 use URI;
 
 our $Handlers = { };
+our $_Fallback_app_or_res;
 our @Requests;
 
 my $register_g;
@@ -46,6 +47,16 @@ $app = sub {
         }
     }
 
+    if ($_Fallback_app_or_res) {
+        $env->{'test.www.stub.handler'} = [ 'FALLBACK', $_Fallback_app_or_res ];
+        if (ref $_Fallback_app_or_res eq 'CODE') {
+            my $res = $_Fallback_app_or_res->($env, $req);
+            return $res if $res;
+        } else {
+            return $_Fallback_app_or_res;
+        }
+    }
+
     my ($file, $line) = _trace_file_and_line();
 
     my $method = $req->method;
@@ -74,6 +85,22 @@ sub register {
             $Handlers->{$uri_or_re} = $old_handler;
         } else {
             delete $Handlers->{$uri_or_re};
+        }
+    };
+}
+
+sub _register_fallback {
+    my ($class, $app_or_res) = @_;
+    Carp::croak 'PSGI app or response coderef required' unless $app_or_res;
+
+    my $old_Fallback_app = $_Fallback_app_or_res;
+    $_Fallback_app_or_res = $app_or_res;
+
+    defined wantarray && return guard {
+        if ($old_Fallback_app) {
+            $_Fallback_app_or_res = $old_Fallback_app;
+        } else {
+            undef $_Fallback_app_or_res;
         }
     };
 }

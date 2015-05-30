@@ -137,4 +137,52 @@ sub request : Tests {
     ok !Test::WWW::Stub->last_request, 'last_request also cleared';
 }
 
+sub fallback : Tests {
+    my $self = shift;
+
+    my $registered_uri = 'http://example.com/TEST/';
+    my $non_registered_uri = 'http://example.com/NOT/?foo=bar';
+    my $normal_register_g = Test::WWW::Stub->register($registered_uri,  [ 200, [], [ 'register' ] ]);
+
+    ok $self->ua->get($registered_uri)->is_success;
+    ok $self->ua->get($non_registered_uri)->is_error;
+
+    subtest 'app' => sub {
+        my $app = sub {
+            my $env = shift;
+            my $req = Plack::Request->new($env);
+            my $headers = [
+                'X-Test-Req-Uri' => $req->uri->as_string,
+            ];
+            return [ 200, $headers, [ 'fallback' ] ];
+        };
+
+        my $g = Test::WWW::Stub->_register_fallback($app);
+
+        my $registered_res = $self->ua->get($registered_uri);
+        ok $registered_res->is_success;
+        is $registered_res->content, 'register', 'registered handler';
+
+        my $fallback_res = $self->ua->get($non_registered_uri);
+        ok $fallback_res->is_success;
+        is $fallback_res->content, 'fallback', 'fallback handler';
+        is $fallback_res->header( 'X-Test-Req-Uri' ), $non_registered_uri, 'query also passed';
+    };
+
+    ok $self->ua->get($non_registered_uri)->is_error, 'guard dropped, so no fallback anymore';
+
+    subtest 'res array' => sub {
+        my $res = [ 200, [], [ 'fallback' ] ];
+        my $g = Test::WWW::Stub->_register_fallback($res);
+
+        my $registered_res = $self->ua->get($registered_uri);
+        ok $registered_res->is_success;
+        is $registered_res->content, 'register', 'registered handler';
+
+        my $fallback_res = $self->ua->get($non_registered_uri);
+        ok $fallback_res->is_success;
+        is $fallback_res->content, 'fallback', 'fallback handler';
+    };
+}
+
 __PACKAGE__->runtests;
