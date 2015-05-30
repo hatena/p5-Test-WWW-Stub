@@ -65,7 +65,21 @@ $app = sub {
     return [ 499, [], [] ];
 };
 
+my $feature_instances = {};
 sub import {
+    my ($class, %args) = @_;
+
+    # fixture => {
+    #   enable => 1, # default 0 (disabled)
+    #   cache_dir => 'FILEPATH', # default t/fixtures/webmock
+    #   ua_class => '', # default LWP
+    # }
+    if ($args{fixture} && $args{fixture}->{enables}) {
+        require Test::WWW::Stub::Feature::Fixture;
+        $feature_instances->{fixture} =
+            Test::WWW::Stub::Feature::Fixture->initialize(%{$args{fixture}});
+    }
+
     $register_g = LWP::Protocol::PSGI->register($app);
 }
 
