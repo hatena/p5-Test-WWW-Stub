@@ -11,7 +11,7 @@ use Plack::Request;
 use Test::More ();
 use URI;
 # Feature specific
-use LWP;
+use LWP::UserAgent;
 use HTTP::Request;
 use Path::Class qw(dir);
 use Plack::Response;

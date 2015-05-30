@@ -42,16 +42,20 @@
       },
       "runtime" : {
          "requires" : {
+            "Class::Accessor::Lite" : "0",
+            "HTTP::Request" : "0",
             "LWP::Protocol::PSGI" : "0",
+            "LWP::UserAgent" : "0",
             "List::MoreUtils" : "0",
+            "Path::Class" : "0",
             "Plack::Request" : "0",
+            "Plack::Response" : "0",
             "Test::More" : "0.98",
             "perl" : "5.010"
          }
       },
       "test" : {
          "requires" : {
-            "LWP::UserAgent" : "0",
             "Test::Class" : "0",
             "Test::Deep" : "0",
             "Test::Tester" : "0"
