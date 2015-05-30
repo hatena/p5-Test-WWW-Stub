@@ -163,7 +163,7 @@ Test::WWW::Stub - Block and stub specified URL for LWP
 
     {
         # you can unstub and allow external access temporary
-        my $unregister_guard = Test::WWW::Stub->unregister;
+        my $unstub_guard = Test::WWW::Stub->unstub;
 
         # External access occurs!!
         ok $ua->get('http://example.com');
