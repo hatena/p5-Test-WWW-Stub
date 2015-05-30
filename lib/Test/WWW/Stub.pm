@@ -69,15 +69,20 @@ my $feature_instances = {};
 sub import {
     my ($class, %args) = @_;
 
-    # fixture => {
-    #   enable => 1, # default 0 (disabled)
-    #   cache_dir => 'FILEPATH', # default t/fixtures/webmock
-    #   ua_class => '', # default LWP
-    # }
-    if ($args{fixture} && $args{fixture}->{enable}) {
-        require Test::WWW::Stub::Feature::Fixture;
-        $feature_instances->{fixture} =
-            Test::WWW::Stub::Feature::Fixture->initialize(%{$args{fixture}});
+    my $features = [ keys %args ];
+    for my $feature_name (@$features) {
+        my $feature = $args{$feature_name};
+
+        # accepts FEATURE_NAME => 1 or FEATURE_NAME => { %args }
+        $feature = +{} unless ref $feature;
+
+        my $package_name = $feature->{package_name} //
+            sprintf('Test::WWW::Stub::Feature::%s', ucfirst($feature));
+        require $package_name;
+
+        my $available_keys = [ grep {$_ ne 'package_name'} keys %$feature ];
+        my $feature_args = +{ map { $_ => $feature->{$_} } @$available_keys };
+        $feature_instances->{$feature_name} = $package_name->initialize(%$feature_args);
     }
 
     $register_g = LWP::Protocol::PSGI->register($app);
