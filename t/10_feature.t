@@ -101,10 +101,17 @@ sub unstub : Tests {
 sub request : Tests {
     my $self = shift;
 
+    # at first reset requests
+    Test::WWW::Stub->clear_requests;
+    cmp_deeply [ Test::WWW::Stub->requests], [];
+
     my $stub_g = Test::WWW::Stub->register(qr<\A\Qhttp://request.example.com/\E>, [ 200, [], ['okok'] ]);
 
     $self->ua->get('http://request.example.com/FIRST');
     $self->ua->get('http://request.example.com/SECOND');
+
+    my $requested_requests = [ Test::WWW::Stub->requests ];
+    is scalar @$requested_requests, 2;
 
     ok test_pass(
         sub{ Test::WWW::Stub->requested_ok('GET', 'http://request.example.com/FIRST') }
@@ -124,11 +131,10 @@ sub request : Tests {
         is $last_req->uri, 'http://request.example.com/SECOND';
     };
 
-    my $requested_requests = [ Test::WWW::Stub->requests ];
-    is scalar @$requested_requests, 11; # XXX dependent on other tests!
-
     Test::WWW::Stub->clear_requests;
-    cmp_deeply [ Test::WWW::Stub->requests], [];
+    cmp_deeply [ Test::WWW::Stub->requests], [], 'properly cleared';
+
+    ok !Test::WWW::Stub->last_request, 'last_request also cleared';
 }
 
 __PACKAGE__->runtests;
