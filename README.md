@@ -5,7 +5,8 @@ Test::WWW::Stub - Block and stub specified URL for LWP
 
 # SYNOPSIS
 
-    # External http(s) access via LWP is blocked by just using this module.
+    # External http(s) access via LWP is blocked by just declaring 'use Test::WWW::Stub';
+    # Note that 'require Test::WWW::Stub' or 'use Test::WWW::Stub ()' doesn't block external access.
     use Test::WWW::Stub;
 
     my $ua = LWP::UserAgent->new;

@@ -46,7 +46,7 @@
             "List::MoreUtils" : "0",
             "Plack::Request" : "0",
             "Test::More" : "0.98",
-            "perl" : "5.008001"
+            "perl" : "5.010"
          }
       },
       "test" : {
