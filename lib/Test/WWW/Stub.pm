@@ -16,6 +16,48 @@ use URI;
 our $Handlers = { };
 our @Requests;
 
+my $register_g;
+my $app;
+sub _app { $app; }
+
+$app = sub {
+    my ($env) = @_;
+    my $req = Plack::Request->new($env);
+
+    push @Requests, $req;
+
+    # Don't use query part of URI for handler matching.
+    my $uri = $req->uri->clone;
+       $uri->path_query($uri->path);
+
+    for my $key (keys %$Handlers) {
+        my $handler = $Handlers->{$key};
+        my @match;
+        if ($handler->{type} eq 'Regexp' ? (@match = ($uri =~ qr<$key>)) : $uri eq $key) {
+            if (my $app = $handler->{app}) {
+                $env->{'test.www.stub.handler'} = [ $key, $app ];
+                my $res = $app->($env, $req, @match);
+                return $res if $res;
+            } elsif (my $res = $handler->{res}) {
+                return $res;
+            } else {
+                Test::More::BAIL_OUT 'Handler MUST be a PSGI app or an ARRAY';
+            }
+        }
+    }
+
+    my ($file, $line) = _trace_file_and_line();
+
+    my $method = $req->method;
+    Test::More::diag "Unexpected external access: $method $uri at $file line $line";
+
+    return [ 499, [], [] ];
+};
+
+sub import {
+    $register_g = LWP::Protocol::PSGI->register($app);
+}
+
 sub register {
     my ($class, $uri_or_re, $app_or_res) = @_;
     $app_or_res //= [200, [], []];
@@ -60,44 +102,15 @@ sub clear_requests {
     @Requests = ();
 }
 
-my $app = sub {
-    my ($env) = @_;
-    my $req = Plack::Request->new($env);
-
-    push @Requests, $req;
-
-    # Don't use query part of URI for handler matching.
-    my $uri = $req->uri->clone;
-       $uri->path_query($uri->path);
-
-    for my $key (keys %$Handlers) {
-        my $handler = $Handlers->{$key};
-        my @match;
-        if ($handler->{type} eq 'Regexp' ? (@match = ($uri =~ qr<$key>)) : $uri eq $key) {
-            if (my $app = $handler->{app}) {
-                $env->{'test.www.stub.handler'} = [ $key, $app ];
-                my $res = $app->($env, $req, @match);
-                return $res if $res;
-            } elsif (my $res = $handler->{res}) {
-                return $res;
-            } else {
-                Test::More::BAIL_OUT 'Handler MUST be a PSGI app or an ARRAY';
-            }
-        }
-    }
-
+sub _trace_file_and_line {
     my $level = $Test::Builder::Level;
     my (undef, $file, $line) = caller($level);
+    # assume "Actual" caller is test file named FOOBAR.t
     while ($file && $file !~ m<\.t$>) {
         (undef, $file, $line) = caller(++$level);
     }
-    my $method = $req->method;
-    Test::More::diag "Unexpected external access: $method $uri at $file line $line";
-
-    return [ 499, [], [] ];
-};
-
-my $register_g = LWP::Protocol::PSGI->register($app);
+    ($file, $line);
+}
 
 sub unstub {
     Carp::croak 'guard is required' unless defined wantarray;
@@ -118,7 +131,8 @@ Test::WWW::Stub - Block and stub specified URL for LWP
 
 =head1 SYNOPSIS
 
-    # External http(s) access via LWP is blocked by just using this module.
+    # External http(s) access via LWP is blocked by just declaring 'use Test::WWW::Stub';
+    # Note that 'require Test::WWW::Stub' or 'use Test::WWW::Stub ()' doesn't block external access.
     use Test::WWW::Stub;
 
     my $ua = LWP::UserAgent->new;
