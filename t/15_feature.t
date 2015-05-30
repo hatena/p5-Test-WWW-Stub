@@ -17,7 +17,6 @@ use LWP::UserAgent;
         # keep guard in instance
         return +{ guard => $guard };
     }
-    $INC{'Test::WWW::Stub::Feature::Dummy'} = 1; # XXX
 }
 
 use_ok (

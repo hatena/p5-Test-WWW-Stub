@@ -78,7 +78,7 @@ sub import {
 
         my $package_name = $feature->{package_name} //
             sprintf('Test::WWW::Stub::Feature::%s', ucfirst($feature_name));
-        require $package_name;
+        eval "require $package_name;";
 
         my $available_keys = [ grep {$_ ne 'package_name'} keys %$feature ];
         my $feature_args = +{ map { $_ => $feature->{$_} } @$available_keys };
