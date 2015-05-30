@@ -90,3 +90,35 @@ sub process_request {
         return $plack_res->finalize;
     }
 }
+
+1;
+__END__
+
+=encoding utf-8
+
+=head1 NAME
+
+Test::WWW::Stub::Feature::Fixture - Pre-captured response from fixture file
+
+=head1 SYNOPSIS
+
+    use Test::WWW::Stub ( fixture => 1 );
+
+=head1 DESCRIPTION
+
+TBD
+
+=head1 LICENSE
+
+Copyright (C) Hatena Co., Ltd.
+
+This library is free software; you can redistribute it and/or modify
+it under the same terms as Perl itself.
+
+=head1 AUTHOR
+
+Asato Wakisaka E<lt>asato.wakisaka@gmail.comE<gt>
+
+Original implementation written by hitode909.
+
+=cut
