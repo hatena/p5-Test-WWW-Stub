@@ -18,6 +18,7 @@ use Plack::Response;
 
 use Class::Accessor::Lite (
     ro  => [qw/cache_dir ua_class/],
+    new => 1,
 );
 
 sub initialize {
@@ -38,12 +39,12 @@ sub cache_dir_dir {
 
 sub create_ua {
     my $self = shift;
-    $self->{ua_class} ? LWP::UserAgent->new : $self->{ua_class}->new;
+    $self->{ua_class} ? $self->{ua_class}->new : LWP::UserAgent->new;
 }
 
 sub cache_file_for_uri {
     my ($self, $uri) = @_;
-    $self->_cache_dir_dir->file(URI::Escape::uri_escape_utf8($uri));
+    $self->cache_dir_dir->file(URI::Escape::uri_escape_utf8($uri));
 }
 
 sub process_request {
@@ -77,7 +78,7 @@ sub process_request {
         my $http_req = HTTP::Request->new($req->method, $req->uri, $req->headers, $req->content);
 
         my $res = do {
-            my $undef_guard = Test::WWW::Stub->unregister;
+            my $undef_guard = Test::WWW::Stub->unstub;
 
             $self->create_ua->request($http_req);
         };

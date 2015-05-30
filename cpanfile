@@ -17,5 +17,8 @@ on 'test' => sub {
     requires 'Test::Deep';
     requires 'Test::Tester';
     # requires 'LWP::UserAgent';
+    requires 'HTTP::Response';
+    requires 'Path::Class';
+    requires 'File::Temp';
 };
 

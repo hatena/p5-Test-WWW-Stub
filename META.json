@@ -56,6 +56,9 @@
       },
       "test" : {
          "requires" : {
+            "File::Temp" : "0",
+            "HTTP::Response" : "0",
+            "Path::Class" : "0",
             "Test::Class" : "0",
             "Test::Deep" : "0",
             "Test::Tester" : "0"
