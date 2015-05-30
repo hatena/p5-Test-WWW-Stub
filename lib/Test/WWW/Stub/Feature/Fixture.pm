@@ -70,7 +70,7 @@ sub process_request {
 
         my $method = $req->method;
 
-        Test::More::diag "Capturing external access: $method $uri at $file line $line.";
+        Test::More::diag "[Feature::Fixture] Capturing external access: $method $uri at $file line $line.";
         my $cache_dir = $self->cache_dir_dir;
         unless (-d $cache_dir) {
             $cache_dir->mkpath;
@@ -90,6 +90,12 @@ sub process_request {
         my $plack_res = Plack::Response->new($res->code, $res->headers, $res->content);
         return $plack_res->finalize;
     }
+
+    # Coming here means:
+    # - No registered stub matched
+    # - Matching fixture not found
+    # - WWW_STUB_ENABLE_CAPTURE not enabled
+    Test::More::diag "[Feature::Fixture] Fixture feature enabled, but matching fixture for this request was not found. To enable capturing, set env WWW_STUB_ENABLE_CAPTURE=1";
 }
 
 1;
