@@ -83,6 +83,18 @@ sub last_request {
     return $Requests[-1];
 }
 
+sub last_request_for {
+    my ($class, $method, $url) = @_;
+    my $reqs = { map { _request_signature($_) => $_ } @Requests };
+    my $signature = "$method $url";
+    return $reqs->{$signature};
+}
+
+sub _request_signature {
+    my ($req) = @_;
+    return join ' ', $req->method, $req->uri;
+}
+
 sub requests { @Requests }
 
 sub requested_ok {
