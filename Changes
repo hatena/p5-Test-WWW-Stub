@@ -2,6 +2,11 @@ Revision history for Perl extension Test-WWW-Stub
 
 {{$NEXT}}
 
+0.03 2015-12-14T10:41:54Z
+    - Add #last_request_for. (#10)
+    - Move LWP::Protocol::PSGI->register to import. (#8)
+    - Declare requirement of perl 5.10. (Maybe this module has never worked with 5.8)
+
 0.02 2015-05-17T10:38:01Z
     - Fix typo in README. (wrong module name, #7)
     - Add #clear_requests (#6).
