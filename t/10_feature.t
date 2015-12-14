@@ -2,7 +2,7 @@ use strict;
 use warnings;
 use Test::Tester; # Call before any other Test::Builder-based modules
 use Test::More;
-use Test::Deep qw( cmp_deeply methods );
+use Test::Deep qw( cmp_deeply methods isa );
 use parent qw( Test::Class );
 
 use Plack::Request;
@@ -96,6 +96,33 @@ sub unstub : Tests {
 
         ok $self->ua->get('http://example.com/TEST')->is_success, 're-registered stub';
     }
+}
+
+sub last_request_for : Tests {
+    my ($self) = @_;
+
+    # at first reset requests
+    Test::WWW::Stub->clear_requests;
+
+    my $stub_g = Test::WWW::Stub->register(qr<\A\Qhttp://request.example.com/\E>, [ 200, [], ['okok'] ]);
+
+    $self->ua->get('http://request.example.com/FIRST', 'X-Request-Id' => 1);
+    $self->ua->get('http://request.example.com/FIRST?k=v', 'X-Request-Id' => 2);
+    $self->ua->get('http://request.example.com/SECOND');
+
+    my $req_get_first = Test::WWW::Stub->last_request_for('GET', 'http://request.example.com/FIRST');
+    cmp_deeply $req_get_first, isa('Plack::Request') & methods(
+        request_uri => '/FIRST?k=v',
+        ['header', 'X-Request-Id'] => 2,
+    ), 'last request for given method and URL';
+
+    my $req_get_second = Test::WWW::Stub->last_request_for('GET', 'http://request.example.com/SECOND');
+    cmp_deeply $req_get_second, isa('Plack::Request') & methods(
+        request_uri => '/SECOND',
+    ), 'last request for given method and URL';
+
+    my $req_post_first = Test::WWW::Stub->last_request_for('POST', 'http://request.example.com/FIRST');
+    is $req_post_first, undef, 'URL is matched, but method is NOT matched';
 }
 
 sub request : Tests {

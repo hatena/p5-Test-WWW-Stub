@@ -26,9 +26,7 @@ $app = sub {
 
     push @Requests, $req;
 
-    # Don't use query part of URI for handler matching.
-    my $uri = $req->uri->clone;
-       $uri->path_query($uri->path);
+    my $uri = _normalize_uri($req->uri);
 
     for my $key (keys %$Handlers) {
         my $handler = $Handlers->{$key};
@@ -83,6 +81,27 @@ sub last_request {
     return $Requests[-1];
 }
 
+sub last_request_for {
+    my ($class, $method, $url) = @_;
+    my $reqs = { map { _request_signature($_) => $_ } @Requests };
+    my $signature = "$method $url";
+    return $reqs->{$signature};
+}
+
+sub _request_signature {
+    my ($req) = @_;
+    my $normalized = _normalize_uri($req->uri);
+    return join ' ', $req->method, $normalized;
+}
+
+# Don't use query part of URI for handler matching.
+sub _normalize_uri {
+    my ($uri) = @_;
+    my $cloned = $uri->clone;
+    $cloned->query(undef);
+    return $cloned;
+}
+
 sub requests { @Requests }
 
 sub requested_ok {
@@ -90,8 +109,7 @@ sub requested_ok {
     local $Test::Builder::Level = $Test::Builder::Level + 1;
     Test::More::ok(
         List::MoreUtils::any(sub {
-            my $req_url = $_->uri->clone;
-               $req_url->path_query($req_url->path);
+            my $req_url = _normalize_uri($_->uri);
             $_->method eq $method && $req_url eq $url
         }, @Requests),
         "stubbed $method $url",
@@ -223,6 +241,12 @@ Returns an array of L<Plack::Request> which is handled by Test::WWW::Stub.
 Returns a Plack::Request object last handled by Test::WWW::Stub.
 
 This method is same as C<[Test::WWW::Stub-E<gt>requests]-E<gt>[-1]>.
+
+=item  C<last_request_for>
+
+    my $last_req = Test::WWW::Stub->last_request_for($method, $uri);
+
+Returns a C<Plack::Request> object last handled by Test::WWW::Stub and matched given HTTP method and URI.
 
 =item C<clear_requests>
 
