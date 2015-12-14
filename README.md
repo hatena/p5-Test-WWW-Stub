@@ -95,6 +95,12 @@ Because this modules uses [LWP::Protocol::PSGI](https://metacpan.org/pod/LWP::Pr
 
     This method is same as `[Test::WWW::Stub->requests]->[-1]`.
 
+- `last_request_for`
+
+        my $last_req = Test::WWW::Stub->last_request_for($method, $uri);
+
+    Returns a `Plack::Request` object last handled by Test::WWW::Stub and matched given HTTP method and URI.
+
 - `clear_requests`
 
         Test::WWW::Stub->clear_requests;

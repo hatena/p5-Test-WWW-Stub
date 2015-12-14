@@ -70,5 +70,8 @@
          "web" : "https://github.com/astj/p5-Test-WWW-Stub"
       }
    },
-   "version" : "0.02"
+   "version" : "0.02",
+   "x_contributors" : [
+      "aereal <aereal@aereal.org>"
+   ]
 }
