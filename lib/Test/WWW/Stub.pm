@@ -242,6 +242,12 @@ Returns a Plack::Request object last handled by Test::WWW::Stub.
 
 This method is same as C<[Test::WWW::Stub-E<gt>requests]-E<gt>[-1]>.
 
+=item  C<last_request_for>
+
+    my $last_req = Test::WWW::Stub->last_request_for($method, $uri);
+
+Returns a C<Plack::Request> object last handled by Test::WWW::Stub and matched given HTTP method and URI.
+
 =item C<clear_requests>
 
     Test::WWW::Stub->clear_requests;
