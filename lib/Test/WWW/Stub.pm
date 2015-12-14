@@ -26,9 +26,7 @@ $app = sub {
 
     push @Requests, $req;
 
-    # Don't use query part of URI for handler matching.
-    my $uri = $req->uri->clone;
-       $uri->path_query($uri->path);
+    my $uri = _normalize_uri($req->uri);
 
     for my $key (keys %$Handlers) {
         my $handler = $Handlers->{$key};
@@ -92,7 +90,16 @@ sub last_request_for {
 
 sub _request_signature {
     my ($req) = @_;
-    return join ' ', $req->method, $req->uri;
+    my $normalized = _normalize_uri($req->uri);
+    return join ' ', $req->method, $normalized;
+}
+
+# Don't use query part of URI for handler matching.
+sub _normalize_uri {
+    my ($uri) = @_;
+    my $cloned = $uri->clone;
+    $cloned->query(undef);
+    return $cloned;
 }
 
 sub requests { @Requests }
@@ -102,8 +109,7 @@ sub requested_ok {
     local $Test::Builder::Level = $Test::Builder::Level + 1;
     Test::More::ok(
         List::MoreUtils::any(sub {
-            my $req_url = $_->uri->clone;
-               $req_url->path_query($req_url->path);
+            my $req_url = _normalize_uri($_->uri);
             $_->method eq $method && $req_url eq $url
         }, @Requests),
         "stubbed $method $url",

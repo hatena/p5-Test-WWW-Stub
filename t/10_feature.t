@@ -107,12 +107,12 @@ sub last_request_for : Tests {
     my $stub_g = Test::WWW::Stub->register(qr<\A\Qhttp://request.example.com/\E>, [ 200, [], ['okok'] ]);
 
     $self->ua->get('http://request.example.com/FIRST', 'X-Request-Id' => 1);
-    $self->ua->get('http://request.example.com/FIRST', 'X-Request-Id' => 2);
+    $self->ua->get('http://request.example.com/FIRST?k=v', 'X-Request-Id' => 2);
     $self->ua->get('http://request.example.com/SECOND');
 
     my $req_get_first = Test::WWW::Stub->last_request_for('GET', 'http://request.example.com/FIRST');
     cmp_deeply $req_get_first, isa('Plack::Request') & methods(
-        request_uri => '/FIRST',
+        request_uri => '/FIRST?k=v',
         ['header', 'X-Request-Id'] => 2,
     ), 'last request for given method and URL';
 
