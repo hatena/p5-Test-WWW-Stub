@@ -2,6 +2,9 @@ Revision history for Perl extension Test-WWW-Stub
 
 {{$NEXT}}
 
+0.04 2015-12-16T09:32:08Z
+    - Fix a bug that #unstub doesn't work with older LWP::Protocol::PSGI. (#11, thanks to aereal)
+
 0.03 2015-12-14T10:41:54Z
     - Add #last_request_for. (#10)
     - Move LWP::Protocol::PSGI->register to import. (#8)
