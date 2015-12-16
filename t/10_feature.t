@@ -17,6 +17,24 @@ sub test_pass {
     return $results[0]->{ok};
 }
 
+sub lwp_protocol : Tests {
+    subtest 'imported' => sub {
+        my ($premature) = run_tests(sub { ua()->get('http://example.com/') });
+        like $premature, qr/\AUnexpected external access:/, 'diag';
+    };
+    subtest 'imported and unstubbed' => sub {
+        my $g = Test::WWW::Stub->unstub;
+        my ($premature) = run_tests(sub { ua()->get('http://example.com/') });
+        is $premature, '', 'no diag';
+    };
+    subtest 'unstubbed and imported multiple time' => sub {
+        Test::WWW::Stub->import;
+        my $g = Test::WWW::Stub->unstub;
+        my ($premature) = run_tests(sub { ua()->get('http://example.com/') });
+        is $premature, '', 'no diag';
+    };
+}
+
 sub register : Tests {
     my $self = shift;
 

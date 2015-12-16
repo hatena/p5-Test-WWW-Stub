@@ -53,7 +53,7 @@ $app = sub {
 };
 
 sub import {
-    $register_g = LWP::Protocol::PSGI->register($app);
+    $register_g //= LWP::Protocol::PSGI->register($app);
 }
 
 sub register {
