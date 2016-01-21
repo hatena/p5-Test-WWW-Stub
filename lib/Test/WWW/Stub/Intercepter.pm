@@ -1,4 +1,4 @@
-package Test::WWW::Stub::HandlerRegistry;
+package Test::WWW::Stub::Intercepter;
 
 use strict;
 use warnings;
@@ -13,7 +13,7 @@ sub new {
 sub call_handler {
     my ($self, $uri, $env, $req) = @_;
     for my $pattern (keys %{ $self->{registry} }) {
-        my $handler = $self->{registry}->{$key};
+        my $handler = $self->{registry}->{$pattern};
         my $maybe_res = $handler->try_call($uri, $env, $req);
         return $maybe_res if $maybe_res;
     }

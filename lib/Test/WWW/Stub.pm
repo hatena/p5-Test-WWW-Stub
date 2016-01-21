@@ -13,9 +13,9 @@ use Test::More ();
 use List::MoreUtils ();
 use URI;
 
-use Test::WWW::Stub::HandlerRegistry;
+use Test::WWW::Stub::Intercepter;
 
-my  $HandlerRegistry = Test::WWW::Stub::HandlerRegistry->new;
+my  $Intercepter = Test::WWW::Stub::Intercepter->new;
 our @Requests;
 
 my $register_g;
@@ -30,7 +30,7 @@ $app = sub {
 
     my $uri = _normalize_uri($req->uri);
 
-    my $stubbed_res = $HandlerRegistry->call_handler($uri, $env, $req);
+    my $stubbed_res = $Intercepter->call_handler($uri, $env, $req);
     return $stubbed_res if $stubbed_res;
 
     my ($file, $line) = _trace_file_and_line();
@@ -48,14 +48,14 @@ sub import {
 sub register {
     my ($class, $uri_or_re, $app_or_res) = @_;
     $app_or_res //= [200, [], []];
-    my $old_handler = $HandlerRegistry->get($uri_or_re);
+    my $old_handler = $Intercepter->get($uri_or_re);
 
-    $HandlerRegistry->register($uri_or_re, $app_or_res);
+    $Intercepter->register($uri_or_re, $app_or_res);
     defined wantarray && return guard {
         if ($old_handler) {
-            $HandlerRegistry->register($uri_or_re, $old_handler);
+            $Intercepter->register($uri_or_re, $old_handler);
         } else {
-            $HandlerRegistry->unregister($uri_or_re);
+            $Intercepter->unregister($uri_or_re);
         }
     };
 }
