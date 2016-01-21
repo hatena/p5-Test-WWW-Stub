@@ -13,7 +13,9 @@ use Test::More ();
 use List::MoreUtils ();
 use URI;
 
-our $Handlers = { };
+use Test::WWW::Stub::HandlerRegistry;
+
+my  $HandlerRegistry = Test::WWW::Stub::HandlerRegistry->new;
 our @Requests;
 
 my $register_g;
@@ -28,8 +30,8 @@ $app = sub {
 
     my $uri = _normalize_uri($req->uri);
 
-    for my $key (keys %$Handlers) {
-        my $handler = $Handlers->{$key};
+    for my $key (@{ $HandlerRegistry->keys }) {
+        my $handler = $HandlerRegistry->get($key);
         my @match;
         if ($handler->{type} eq 'Regexp' ? (@match = ($uri =~ qr<$key>)) : $uri eq $key) {
             if (my $app = $handler->{app}) {
@@ -59,19 +61,14 @@ sub import {
 sub register {
     my ($class, $uri_or_re, $app_or_res) = @_;
     $app_or_res //= [200, [], []];
-    my $old_handler = $Handlers->{$uri_or_re};
+    my $old_handler = $HandlerRegistry->get($uri_or_re);
 
-    $Handlers->{$uri_or_re} = {
-        type => (ref $uri_or_re || 'Str'),
-        (ref $app_or_res eq 'CODE'
-            ? ( app => $app_or_res )
-                : ( res => $app_or_res )),
-    };
+    $HandlerRegistry->register($uri_or_re, $app_or_res);
     defined wantarray && return guard {
         if ($old_handler) {
-            $Handlers->{$uri_or_re} = $old_handler;
+            $HandlerRegistry->register($uri_or_re, $old_handler);
         } else {
-            delete $Handlers->{$uri_or_re};
+            $HandlerRegistry->unregister($uri_or_re);
         }
     };
 }
