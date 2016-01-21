@@ -30,11 +30,8 @@ $app = sub {
 
     my $uri = _normalize_uri($req->uri);
 
-    for my $key (@{ $HandlerRegistry->keys }) {
-        my $handler = $HandlerRegistry->get($key);
-        my $maybe_res = $handler->try_call($uri, $env, $req);
-        return $maybe_res if $maybe_res;
-    }
+    my $stubbed_res = $HandlerRegistry->call_handler($uri, $env, $req);
+    return $stubbed_res if $stubbed_res;
 
     my ($file, $line) = _trace_file_and_line();
 

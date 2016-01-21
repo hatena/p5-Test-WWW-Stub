@@ -10,9 +10,14 @@ sub new {
     return bless { registry => {} }, $class;
 }
 
-sub keys : method {
-    my ($self) = @_;
-    return [ keys %{ $self->{registry} } ];
+sub call_handler {
+    my ($self, $uri, $env, $req) = @_;
+    for my $pattern (keys %{ $self->{registry} }) {
+        my $handler = $self->{registry}->{$key};
+        my $maybe_res = $handler->try_call($uri, $env, $req);
+        return $maybe_res if $maybe_res;
+    }
+    return undef;
 }
 
 sub get {
