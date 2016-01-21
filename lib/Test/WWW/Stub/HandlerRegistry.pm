@@ -3,6 +3,8 @@ package Test::WWW::Stub::HandlerRegistry;
 use strict;
 use warnings;
 
+use Test::WWW::Stub::Handler;
+
 sub new {
     my ($class) = @_;
     return bless { registry => {} }, $class;
@@ -20,12 +22,7 @@ sub get {
 
 sub register {
     my ($self, $uri_or_re, $app_or_res) = @_;
-    my $handler = {
-        type => (ref $uri_or_re || 'Str'),
-        (ref $app_or_res eq 'CODE'
-            ? ( app => $app_or_res )
-                : ( res => $app_or_res )),
-    };
+    my $handler = Test::WWW::Stub::Handler->factory($uri_or_re, $app_or_res);
     $self->{registry}->{$uri_or_re} = $handler;
 }
 
