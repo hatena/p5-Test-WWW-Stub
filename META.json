@@ -4,7 +4,7 @@
       "Asato Wakisaka <asato.wakisaka@gmail.com>"
    ],
    "dynamic_config" : 0,
-   "generated_by" : "Minilla/v2.3.0, CPAN::Meta::Converter version 2.150001",
+   "generated_by" : "Minilla/v3.0.1, CPAN::Meta::Converter version 2.150001",
    "license" : [
       "perl_5"
    ],
@@ -54,7 +54,8 @@
             "LWP::UserAgent" : "0",
             "Test::Class" : "0",
             "Test::Deep" : "0",
-            "Test::Tester" : "0"
+            "Test::Tester" : "0",
+            "Test::Warnings" : "0"
          }
       }
    },

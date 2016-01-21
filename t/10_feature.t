@@ -2,7 +2,8 @@ use strict;
 use warnings;
 use Test::Tester; # Call before any other Test::Builder-based modules
 use Test::More;
-use Test::Deep qw( cmp_deeply methods isa );
+use Test::Deep qw( cmp_deeply methods isa re );
+use Test::Warnings qw(:no_end_test warnings);
 use parent qw( Test::Class );
 
 use Plack::Request;
@@ -19,19 +20,19 @@ sub test_pass {
 
 sub lwp_protocol : Tests {
     subtest 'imported' => sub {
-        my ($premature) = run_tests(sub { ua()->get('http://example.com/') });
-        like $premature, qr/\AUnexpected external access:/, 'diag';
+        my $warnings = [ warnings { ua()->get('http://example.com/') } ];
+        cmp_deeply $warnings, [ re('Unexpected external access:') ], 'warnings appeared';
     };
     subtest 'imported and unstubbed' => sub {
         my $g = Test::WWW::Stub->unstub;
-        my ($premature) = run_tests(sub { ua()->get('http://example.com/') });
-        is $premature, '', 'no diag';
+        my $warnings = [ warnings { ua()->get('http://example.com/') } ];
+        cmp_deeply $warnings, [], 'no warnings';
     };
     subtest 'unstubbed and imported multiple time' => sub {
         Test::WWW::Stub->import;
         my $g = Test::WWW::Stub->unstub;
-        my ($premature) = run_tests(sub { ua()->get('http://example.com/') });
-        is $premature, '', 'no diag';
+        my $warnings = [ warnings { ua()->get('http://example.com/') } ];
+        cmp_deeply $warnings, [], 'no warnings';
     };
 }
 

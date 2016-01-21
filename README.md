@@ -126,6 +126,6 @@ it under the same terms as Perl itself.
 
 # AUTHOR
 
-Asato Wakisaka <asato.wakisaka@gmail.com>
+Asato Wakisaka &lt;asato.wakisaka@gmail.com>
 
 Original implementation written by suzak.

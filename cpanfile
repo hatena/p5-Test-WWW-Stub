@@ -9,6 +9,7 @@ on 'test' => sub {
     requires 'Test::Class';
     requires 'Test::Deep';
     requires 'Test::Tester';
+    requires 'Test::Warnings';
     requires 'LWP::UserAgent';
 };
 

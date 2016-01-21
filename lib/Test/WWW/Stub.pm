@@ -47,7 +47,7 @@ $app = sub {
     my ($file, $line) = _trace_file_and_line();
 
     my $method = $req->method;
-    Test::More::diag "Unexpected external access: $method $uri at $file line $line";
+    warn "Unexpected external access: $method $uri at $file line $line";
 
     return [ 499, [], [] ];
 };
