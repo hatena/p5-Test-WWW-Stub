@@ -10,7 +10,7 @@ sub new {
     return bless { registry => {} }, $class;
 }
 
-sub call_handler {
+sub intercept {
     my ($self, $uri, $env, $req) = @_;
     for my $pattern (keys %{ $self->{registry} }) {
         my $handler = $self->{registry}->{$pattern};

@@ -30,7 +30,7 @@ $app = sub {
 
     my $uri = _normalize_uri($req->uri);
 
-    my $stubbed_res = $Intercepter->call_handler($uri, $env, $req);
+    my $stubbed_res = $Intercepter->intercept($uri, $env, $req);
     return $stubbed_res if $stubbed_res;
 
     my ($file, $line) = _trace_file_and_line();
