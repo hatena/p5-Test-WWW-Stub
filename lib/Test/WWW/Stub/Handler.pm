@@ -26,14 +26,9 @@ sub factory {
     return $class->new(pattern => $uri_or_re, app => $app);
 }
 
-sub is_regexp {
+sub is_static_pattern {
     my ($self) = @_;
-    return ref($self->{pattern}) eq 'Regexp';
-}
-
-sub is_str {
-    my ($self) = @_;
-    return ! $self->is_regexp;
+    return ref($self->{pattern}) ne 'Regexp';
 }
 
 sub try_call {
@@ -51,10 +46,10 @@ sub _call {
 
 sub _match {
     my ($self, $uri) = @_;
-    return $self->is_str ? $self->_match_str($uri) : $self->_match_regexp($uri);
+    return $self->is_static_pattern ? $self->_match_static($uri) : $self->_match_regexp($uri);
 }
 
-sub _match_str {
+sub _match_static {
     my ($self, $uri) = @_;
     my $matched = $uri eq $self->{pattern} ? 1 : 0;
     return ($matched, []);
