@@ -2,6 +2,9 @@ Revision history for Perl extension Test-WWW-Stub
 
 {{$NEXT}}
 
+0.05 2016-01-23T14:13:37Z
+    - Prefer warn instead of diag when notice unexpected external access. (#12, thanks to aereal)
+
 0.04 2015-12-16T09:32:08Z
     - Fix a bug that #unstub doesn't work with older LWP::Protocol::PSGI. (#11, thanks to aereal)
 
