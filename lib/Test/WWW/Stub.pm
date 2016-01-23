@@ -13,7 +13,9 @@ use Test::More ();
 use List::MoreUtils ();
 use URI;
 
-our $Handlers = { };
+use Test::WWW::Stub::Intercepter;
+
+my  $Intercepter = Test::WWW::Stub::Intercepter->new;
 our @Requests;
 
 my $register_g;
@@ -28,21 +30,8 @@ $app = sub {
 
     my $uri = _normalize_uri($req->uri);
 
-    for my $key (keys %$Handlers) {
-        my $handler = $Handlers->{$key};
-        my @match;
-        if ($handler->{type} eq 'Regexp' ? (@match = ($uri =~ qr<$key>)) : $uri eq $key) {
-            if (my $app = $handler->{app}) {
-                $env->{'test.www.stub.handler'} = [ $key, $app ];
-                my $res = $app->($env, $req, @match);
-                return $res if $res;
-            } elsif (my $res = $handler->{res}) {
-                return $res;
-            } else {
-                Test::More::BAIL_OUT 'Handler MUST be a PSGI app or an ARRAY';
-            }
-        }
-    }
+    my $stubbed_res = $Intercepter->intercept($uri, $env, $req);
+    return $stubbed_res if $stubbed_res;
 
     my ($file, $line) = _trace_file_and_line();
 
@@ -59,19 +48,14 @@ sub import {
 sub register {
     my ($class, $uri_or_re, $app_or_res) = @_;
     $app_or_res //= [200, [], []];
-    my $old_handler = $Handlers->{$uri_or_re};
+    my $old_handler = $Intercepter->get_handler($uri_or_re);
 
-    $Handlers->{$uri_or_re} = {
-        type => (ref $uri_or_re || 'Str'),
-        (ref $app_or_res eq 'CODE'
-            ? ( app => $app_or_res )
-                : ( res => $app_or_res )),
-    };
+    $Intercepter->register($uri_or_re, $app_or_res);
     defined wantarray && return guard {
         if ($old_handler) {
-            $Handlers->{$uri_or_re} = $old_handler;
+            $Intercepter->register($uri_or_re, $old_handler);
         } else {
-            delete $Handlers->{$uri_or_re};
+            $Intercepter->unregister($uri_or_re);
         }
     };
 }
