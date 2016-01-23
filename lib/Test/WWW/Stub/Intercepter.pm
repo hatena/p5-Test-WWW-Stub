@@ -20,9 +20,9 @@ sub intercept {
     return undef;
 }
 
-sub get {
-    my ($self, $key) = @_;
-    return $self->{registry}->{$key};
+sub get_handler {
+    my ($self, $uri_or_re) = @_;
+    return $self->{registry}->{$uri_or_re};
 }
 
 sub register {
