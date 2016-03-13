@@ -4,6 +4,7 @@ requires 'LWP::Protocol::PSGI';
 requires 'Plack::Request';
 requires 'List::MoreUtils';
 requires 'Test::More', '0.98';
+requires 'Guard';
 
 on 'test' => sub {
     requires 'Test::Class';
@@ -12,4 +13,3 @@ on 'test' => sub {
     requires 'Test::Warnings';
     requires 'LWP::UserAgent';
 };
-
