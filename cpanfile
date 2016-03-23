@@ -5,6 +5,7 @@ requires 'Plack::Request';
 requires 'List::MoreUtils';
 requires 'Test::More', '0.98';
 requires 'Guard';
+requires 'URI';
 
 on 'test' => sub {
     requires 'Test::Class';
