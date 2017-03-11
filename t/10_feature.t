@@ -92,6 +92,17 @@ sub register : Tests {
         ok $self->ua->get('http://example.com/HOGE/')->is_success, 'when registered without guard, stub works outside of scope too.';
     };
 
+    subtest 'override stub' => sub {
+        my $g1 = Test::WWW::Stub->register(q<http://example.com/OVERRIDE> => [ 200, [], [] ]);
+        {
+            my $g2 = Test::WWW::Stub->register(q<http://example.com/OVERRIDE> => [ 500, [], [] ]);
+            is $self->ua->get('http://example.com/OVERRIDE')->code, 500, 'override stub';
+            my $g3 = Test::WWW::Stub->register(q<http://example.com/OVERRIDE> => [ 400, [], [] ]);
+            is $self->ua->get('http://example.com/OVERRIDE')->code, 400, 'override stub again in same scope';
+        }
+        is $self->ua->get('http://example.com/OVERRIDE')->code, 200, 'restore stub when out of scope';
+    };
+
 }
 
 sub unstub : Tests {

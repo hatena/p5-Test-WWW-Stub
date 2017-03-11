@@ -4,6 +4,7 @@ use strict;
 use warnings;
 
 use Carp qw(confess);
+use Scalar::Util qw(blessed);
 
 sub new {
     my ($class, %args) = @_;
@@ -14,6 +15,9 @@ sub new {
 
 sub factory {
     my ($class, $uri_or_re, $app_or_res) = @_;
+    if (blessed($app_or_res) && $app_or_res->isa('Test::WWW::Stub::Handler')) {
+        return $app_or_res;
+    }
     my $app;
     my $type = ref($app_or_res);
     if ($type eq 'CODE') {
