@@ -2,6 +2,10 @@ Revision history for Perl extension Test-WWW-Stub
 
 {{$NEXT}}
 
+0.07 2017-03-14T01:52:26Z
+    - Fix a bug where handler would not override (#18, thanks to akiym)
+    - Fix missing prereqs as reported by CPANTS. (#15, thanks to manwar)
+
 0.06 2016-03-13T16:00:45Z
     - Declare dependency on Guard. (#14, thanks to eserte)
 

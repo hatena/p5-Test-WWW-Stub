@@ -4,7 +4,7 @@
       "Asato Wakisaka <asato.wakisaka@gmail.com>"
    ],
    "dynamic_config" : 0,
-   "generated_by" : "Minilla/v3.0.1, CPAN::Meta::Converter version 2.150005",
+   "generated_by" : "Minilla/v3.0.10, CPAN::Meta::Converter version 2.150005",
    "license" : [
       "perl_5"
    ],
@@ -73,11 +73,11 @@
          "web" : "https://github.com/astj/p5-Test-WWW-Stub"
       }
    },
-   "version" : "0.06",
+   "version" : "0.07",
    "x_contributors" : [
       "aereal <aereal@aereal.org>",
       "Mohammad S Anwar <mohammad.anwar@yahoo.com>",
       "Takumi Akiyama <t.akiym@gmail.com>"
    ],
-   "x_serialization_backend" : "JSON::PP version 2.27203"
+   "x_serialization_backend" : "JSON::PP version 2.27300_01"
 }
