@@ -77,7 +77,8 @@
    "x_contributors" : [
       "aereal <aereal@aereal.org>",
       "Mohammad S Anwar <mohammad.anwar@yahoo.com>",
-      "Takumi Akiyama <t.akiym@gmail.com>"
+      "Takumi Akiyama <t.akiym@gmail.com>",
+      "papix <mail@papix.net>"
    ],
    "x_serialization_backend" : "JSON::PP version 2.27300_01"
 }
