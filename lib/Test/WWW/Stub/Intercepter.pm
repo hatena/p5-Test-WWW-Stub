@@ -25,7 +25,7 @@ sub intercept {
 sub register {
     my ($self, $uri_or_re, $app_or_res) = @_;
     my $handler = Test::WWW::Stub::Handler->factory($uri_or_re, $app_or_res);
-    $self->{registry}->{$uri_or_re} = [] unless exists $self->{registry}->{$uri_or_re};
+    $self->{registry}->{$uri_or_re} //= [];
     unshift @{$self->{registry}->{$uri_or_re}}, $handler;
     return $handler;
 }
