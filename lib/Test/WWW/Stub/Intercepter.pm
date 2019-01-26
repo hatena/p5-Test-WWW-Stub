@@ -28,13 +28,14 @@ sub register {
     my $handler = Test::WWW::Stub::Handler->factory($uri_or_re, $app_or_res);
     $self->{registry}->{$uri_or_re} = [] unless exists $self->{registry}->{$uri_or_re};
     unshift @{$self->{registry}->{$uri_or_re}}, $handler;
+    return $handler;
 }
 
 sub unregister {
-    my ($self, $uri_or_re, $app_or_res) = @_;
+    my ($self, $uri_or_re, $handler) = @_;
     return unless exists $self->{registry}->{$uri_or_re};
 
-    my $idx = List::MoreUtils::firstidx { $_->app_or_res eq $app_or_res } @{$self->{registry}->{$uri_or_re}};
+    my $idx = List::MoreUtils::firstidx { $_ eq $handler } @{$self->{registry}->{$uri_or_re}};
     splice @{$self->{registry}->{$uri_or_re}}, $idx, 1;
 }
 

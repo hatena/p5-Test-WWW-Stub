@@ -49,9 +49,9 @@ sub register {
     my ($class, $uri_or_re, $app_or_res) = @_;
     $app_or_res //= [200, [], []];
 
-    $Intercepter->register($uri_or_re, $app_or_res);
+    my $handler = $Intercepter->register($uri_or_re, $app_or_res);
     defined wantarray && return guard {
-        $Intercepter->unregister($uri_or_re, $app_or_res);
+        $Intercepter->unregister($uri_or_re, $handler);
     };
 }
 
