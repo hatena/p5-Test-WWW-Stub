@@ -2,11 +2,10 @@ use strict;
 use warnings;
 use Test::Tester; # Call before any other Test::Builder-based modules
 use Test::More;
-use Test::Deep qw( cmp_deeply methods isa re );
+use Test::Deep qw( cmp_deeply re );
 use Test::Warnings qw(:no_end_test warnings);
 use parent qw( Test::Class );
 
-use Plack::Request;
 use Test::WWW::Stub;
 use LWP::UserAgent;
 
