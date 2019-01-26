@@ -14,7 +14,6 @@ sub new {
 sub intercept {
     my ($self, $uri, $env, $req) = @_;
     for my $pattern (sort { length $a <=> length $b } keys %{ $self->{registry} }) {
-        next unless $self->{registry}->{$pattern};
         for my $handler (@{$self->{registry}->{$pattern}}) {
             my $maybe_res = $handler->try_call($uri, $env, $req);
             return $maybe_res if $maybe_res;
