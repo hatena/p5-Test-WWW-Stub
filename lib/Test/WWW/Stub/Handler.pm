@@ -8,10 +8,9 @@ use Scalar::Util qw(blessed);
 
 sub new {
     my ($class, %args) = @_;
-    my $pattern   = $args{pattern};
-    my $app        = $args{app};
-    my $app_or_res = $args{app_or_res};
-    return bless { pattern => $pattern, app => $app, app_or_res => $app_or_res }, $class;
+    my $pattern = $args{pattern};
+    my $app     = $args{app};
+    return bless { pattern => $pattern, app => $app }, $class;
 }
 
 sub factory {
@@ -28,7 +27,7 @@ sub factory {
     } else {
         confess 'Handler MUST be a PSGI app or an ARRAY';
     }
-    return $class->new(pattern => $uri_or_re, app => $app, app_or_res => $app_or_res);
+    return $class->new(pattern => $uri_or_re, app => $app);
 }
 
 sub is_static_pattern {
@@ -66,10 +65,6 @@ sub _match_regexp {
     my @captures = $uri =~ m/$pattern/;
     my $matched = @captures > 0 ? 1 : 0;
     return ($matched, \@captures);
-}
-
-sub app_or_res {
-    return shift->{app_or_res};
 }
 
 1;
