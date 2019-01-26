@@ -18,7 +18,7 @@ sub test_pass {
     return $results[0]->{ok};
 }
 
-sub lwp_protocol : Tests {
+sub issue_19 : Tests {
     my $self = shift;
 
     my $g1 = Test::WWW::Stub->register('https://example.com/OVERRIDE' => [ 500, [], [] ]);
