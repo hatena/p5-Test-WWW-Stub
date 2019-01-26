@@ -23,12 +23,6 @@ sub intercept {
     return undef;
 }
 
-# who uses?
-sub get_handler {
-    my ($self, $uri_or_re) = @_;
-    return $self->{registry}->{$uri_or_re}->[0];
-}
-
 sub register {
     my ($self, $uri_or_re, $app_or_res) = @_;
     my $handler = Test::WWW::Stub::Handler->factory($uri_or_re, $app_or_res);
