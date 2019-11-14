@@ -1,0 +1,25 @@
+---
+
+name: test
+on:
+  pull_request:
+  push:
+    branches: [master]
+jobs:
+  perl_test:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        perl-version:
+          - '5.14'
+          - latest
+    container:
+      image: perl:${{ matrix.perl-version }}
+    steps:
+      - uses: actions/checkout@v1
+      - name: perl version
+        run: perl -V
+      - name: Install minilla
+        run: cpanm -n Minilla
+      - name: minil test
+        run: minil test
