@@ -4,13 +4,13 @@
       "Asato Wakisaka <asato.wakisaka@gmail.com>"
    ],
    "dynamic_config" : 0,
-   "generated_by" : "Minilla/v3.1.4, CPAN::Meta::Converter version 2.150005",
+   "generated_by" : "Minilla/v3.1.7, CPAN::Meta::Converter version 2.150010",
    "license" : [
       "perl_5"
    ],
    "meta-spec" : {
       "url" : "http://search.cpan.org/perldoc?CPAN::Meta::Spec",
-      "version" : "2"
+      "version" : 2
    },
    "name" : "Test-WWW-Stub",
    "no_index" : {
@@ -35,7 +35,7 @@
          "requires" : {
             "Test::CPAN::Meta" : "0",
             "Test::MinimumVersion::Fast" : "0.04",
-            "Test::PAUSE::Permissions" : "0.04",
+            "Test::PAUSE::Permissions" : "0.07",
             "Test::Pod" : "1.41",
             "Test::Spellunker" : "v0.2.7"
          }
@@ -64,13 +64,13 @@
    "release_status" : "unstable",
    "resources" : {
       "bugtracker" : {
-         "web" : "https://github.com/astj/p5-Test-WWW-Stub/issues"
+         "web" : "https://github.com/hatena/p5-Test-WWW-Stub/issues"
       },
-      "homepage" : "https://github.com/astj/p5-Test-WWW-Stub",
+      "homepage" : "https://github.com/hatena/p5-Test-WWW-Stub",
       "repository" : {
          "type" : "git",
-         "url" : "git://github.com/astj/p5-Test-WWW-Stub.git",
-         "web" : "https://github.com/astj/p5-Test-WWW-Stub"
+         "url" : "git://github.com/hatena/p5-Test-WWW-Stub.git",
+         "web" : "https://github.com/hatena/p5-Test-WWW-Stub"
       }
    },
    "version" : "0.10",
@@ -80,6 +80,6 @@
       "aereal <aereal@aereal.org>",
       "papix <mail@papix.net>"
    ],
-   "x_serialization_backend" : "JSON::PP version 2.27300_01",
+   "x_serialization_backend" : "JSON::PP version 4.02",
    "x_static_install" : 1
 }

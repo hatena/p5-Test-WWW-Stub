@@ -1,4 +1,4 @@
-[![Build Status](https://travis-ci.org/astj/p5-Test-WWW-Stub.svg?branch=master)](https://travis-ci.org/astj/p5-Test-WWW-Stub)
+[![Build Status](https://travis-ci.org/hatena/p5-Test-WWW-Stub.svg?branch=master)](https://travis-ci.org/hatena/p5-Test-WWW-Stub)
 # NAME
 
 Test::WWW::Stub - Block and stub specified URL for LWP
