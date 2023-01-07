@@ -20,6 +20,7 @@ our @Requests;
 
 my $register_g;
 my $app;
+my %import_options;
 sub _app { $app; }
 
 $app = sub {
@@ -42,7 +43,16 @@ $app = sub {
 };
 
 sub import {
-    $register_g //= LWP::Protocol::PSGI->register($app);
+    my ($class, %options) = @_;
+    if (!defined $register_g || _diff(\%import_options, \%options)) {
+        %import_options = %options;
+        $register_g = LWP::Protocol::PSGI->register($app, %options);
+    }
+}
+
+sub unimport {
+    undef $register_g;
+    undef %import_options;
 }
 
 sub register {
@@ -112,9 +122,22 @@ sub _trace_file_and_line {
 sub unstub {
     Carp::croak 'guard is required' unless defined wantarray;
     undef $register_g;
+
+    # Copy options to restore the state at the time of unstub
+    my %options = %import_options;
     return guard {
-        $register_g = LWP::Protocol::PSGI->register($app);
+        %import_options = %options;
+        $register_g = LWP::Protocol::PSGI->register($app, %options);
     }
+}
+
+sub _diff {
+    my ($a, $b) = @_;
+
+    my @diff_a = List::MoreUtils::any { !(exists $b->{$_} && ($b->{$_} eq $a->{$_})) } keys %$a;
+    my @diff_b = List::MoreUtils::any { !(exists $a->{$_} && ($a->{$_} eq $b->{$_})) } keys %$b;
+
+    @diff_a || @diff_b
 }
 
 1;
