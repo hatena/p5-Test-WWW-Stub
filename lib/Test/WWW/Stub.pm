@@ -203,7 +203,7 @@ Because this modules uses L<LWP::Protocol::PSGI> internally, you don't have to m
 
 =head1 METHODS
 
-=over 4
+=over 6
 
 =item C<register>
 
@@ -265,6 +265,29 @@ C<[Test::WWW::Stub-E<gt>requests]> becomes empty just after this method called.
 Unregister stub and enables external access, and returns a guard object which re-enables stub on destroyed.
 
 In constrast to C<register>, this method doesn't work when called in void context.
+
+=item C<import>
+
+    Test::WWW::Stub->import(%options)
+    or
+    use Test:::WWW::Stub
+
+This C<%options> are equivalent to the options of C<LWP::Protocol::PSGI-E<gt>register(%options)>. For example, the options can be set as follows:
+
+    use Test::WWW::Stub (
+        uri => sub {
+            my $uri = shift;
+            $uri ne 'http://localhost:9200'
+        }
+    );
+
+=item C<unimport>
+
+    Test::WWW::Stub->unimport
+    or
+    no Test::WWW::Stub;
+
+Delete the stubbed app and stop stubbing. If you need to stub again, import Test::WWW::Stub.
 
 =back
 
