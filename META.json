@@ -4,7 +4,7 @@
       "Asato Wakisaka <asato.wakisaka@gmail.com>"
    ],
    "dynamic_config" : 0,
-   "generated_by" : "Minilla/v3.1.7, CPAN::Meta::Converter version 2.150010",
+   "generated_by" : "Minilla/v3.1.20, CPAN::Meta::Converter version 2.150010",
    "license" : [
       "perl_5"
    ],
@@ -69,17 +69,21 @@
       "homepage" : "https://github.com/hatena/p5-Test-WWW-Stub",
       "repository" : {
          "type" : "git",
-         "url" : "git://github.com/hatena/p5-Test-WWW-Stub.git",
+         "url" : "https://github.com/hatena/p5-Test-WWW-Stub.git",
          "web" : "https://github.com/hatena/p5-Test-WWW-Stub"
       }
    },
-   "version" : "0.10",
+   "version" : "0.11",
+   "x_authority" : "cpan:ASTJ",
    "x_contributors" : [
+      "AnaTofuZ <anatofuz@gmail.com>",
+      "AnaTofuZ <anatofuz@hatena.ne.jp>",
       "Mohammad S Anwar <mohammad.anwar@yahoo.com>",
       "Takumi Akiyama <t.akiym@gmail.com>",
       "aereal <aereal@aereal.org>",
+      "kfly8 <kfly@cpan.org>",
       "papix <mail@papix.net>"
    ],
-   "x_serialization_backend" : "JSON::PP version 4.02",
+   "x_serialization_backend" : "JSON::PP version 4.04",
    "x_static_install" : 1
 }
