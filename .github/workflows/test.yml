@@ -11,12 +11,13 @@ jobs:
     strategy:
       matrix:
         perl-version:
-          - '5.14'
+          - '5.38'
           - latest
-    container:
-      image: perl:${{ matrix.perl-version }}
     steps:
-      - uses: actions/checkout@v1
+      - uses: actions/checkout@v5
+      - uses: shogo82148/actions-setup-perl@v1
+        with:
+          perl-version: ${{ matrix.perl-version }}
       - name: perl version
         run: perl -V
       - name: Install minilla
