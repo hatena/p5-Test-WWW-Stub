@@ -9,6 +9,7 @@ jobs:
   perl_test:
     runs-on: ubuntu-latest
     strategy:
+      fail-fast: false
       matrix:
         perl-version:
           - '5.38'
