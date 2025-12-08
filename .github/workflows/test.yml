@@ -23,5 +23,7 @@ jobs:
         run: perl -V
       - name: Install minilla
         run: cpanm -n Minilla
+      - name: Install deps
+        run: cpanm --installdeps --with-develop --notest .
       - name: minil test
-        run: minil test
+        run: minil test --no-auto-install
