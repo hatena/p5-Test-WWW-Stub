@@ -9,17 +9,21 @@ jobs:
   perl_test:
     runs-on: ubuntu-latest
     strategy:
+      fail-fast: false
       matrix:
         perl-version:
-          - '5.14'
+          - '5.38'
           - latest
-    container:
-      image: perl:${{ matrix.perl-version }}
     steps:
-      - uses: actions/checkout@v1
+      - uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
+      - uses: shogo82148/actions-setup-perl@f9f0bf89e0d19ddbabb2f40d43db2e944bce7d2f # v1.36.0
+        with:
+          perl-version: ${{ matrix.perl-version }}
       - name: perl version
         run: perl -V
       - name: Install minilla
         run: cpanm -n Minilla
+      - name: Install deps
+        run: cpanm --installdeps --with-develop --notest .
       - name: minil test
-        run: minil test
+        run: minil test --no-auto-install
